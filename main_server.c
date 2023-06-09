@@ -6,7 +6,7 @@
 /*   By: amontign <amontign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 11:03:52 by amontign          #+#    #+#             */
-/*   Updated: 2023/05/31 19:17:54 by amontign         ###   ########.fr       */
+/*   Updated: 2023/06/08 12:17:12 by amontign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-typedef struct	s_data
-{
-	int bin_tab[8];
-	int signalCount;
-}				t_data;
-
-t_data *data;
 
 int bin_to_dec(int bin_tab[8]) {
 	int res = 0;
@@ -38,39 +30,48 @@ int bin_to_dec(int bin_tab[8]) {
 	return (res);
 }
 
-void sigHandler(int sig)
+void sigHandler(int signal_num)
 {
-	printf("uwu");
-	usleep(10);
-	if (sig == 10)
+	static int	signalCount;
+	static int	bin_tab[8];
+	char display;
+
+	if (signal_num == SIGUSR1)
 	{
-		data->bin_tab[data->signalCount] = 0;
+		bin_tab[signalCount] = 0;
 	}
 	else
 	{
-		data->bin_tab[data->signalCount] = 1;
+		bin_tab[signalCount] = 1;
 	}
-	data->signalCount++;
-	if (data->signalCount == 8)
+	signalCount++;
+	if (signalCount == 8)
 	{
-		printf("%c", (char)bin_to_dec(data->bin_tab));
-		data->signalCount = 0;
+		display = bin_to_dec(bin_tab);
+		write(1, &display, 1);
+		signalCount = 0;
 	}
 }
 
 int main(void)
 {
-	data = malloc(sizeof(t_data));
-	if (!data)
-		return (1);
-	data->signalCount = 0;
+	struct sigaction action;
+	action.sa_handler = sigHandler;
+	sigemptyset(&action.sa_mask);
+	action.sa_flags = 0;
+
 	printf("PID : %d\n", getpid());
-	signal(SIGUSR1, sigHandler);
-	signal(SIGUSR2, sigHandler);
+	if (sigaction(SIGUSR1, &action, NULL) < 0) {
+		//error
+		return (1);
+	}
+	if (sigaction(SIGUSR2, &action, NULL) < 0) {
+		//error
+		return (1);
+	}
 	while(1)
 	{
 		pause();
 	}
-	free(data);
 	return (0);
 }
