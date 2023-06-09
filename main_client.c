@@ -6,7 +6,7 @@
 /*   By: amontign <amontign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 12:11:35 by amontign          #+#    #+#             */
-/*   Updated: 2023/05/31 19:12:50 by amontign         ###   ########.fr       */
+/*   Updated: 2023/06/09 10:22:05 by amontign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,13 @@ int	ft_atoi(const char *nptr)
 	return (res * neg);
 }
 
-int	wrong_arg(char **argv)
-{
-	(void)argv;
-	return (0);
-}
-
 int	(*msg_to_bin_alloc(char *msg))[8]
 {
 	int	nb_of_char;
-	int (*tab_int_msg)[8];
+	int	(*tab_int_msg)[8];
 
 	nb_of_char = 0;
-	while(msg[nb_of_char])
+	while (msg[nb_of_char])
 	{
 		nb_of_char++;
 	}
@@ -91,43 +85,47 @@ void	msg_to_bin_complete(int (*tab_int_msg)[8], char *msg)
 	}
 }
 
-int main(int argc, char **argv)
+void	main2(int i, int (*tab_int_msg)[8], char **argv)
 {
-	int (*tab_int_msg)[8];
+	int	j;
 
-	if (argc != 3 || wrong_arg(argv))
+	j = 0;
+	while (j < 8)
 	{
-		return (1);
+		if (tab_int_msg[i][j] == 0)
+			kill(ft_atoi(argv[1]), SIGUSR1);
+		else
+			kill(ft_atoi(argv[1]), SIGUSR2);
+		usleep(100);
+		j++;
 	}
+}
+
+int	main(int argc, char **argv)
+{
+	int	(*tab_int_msg)[8];
+	int	i;
+	int	nb_of_char;
+
+	if (argc != 3)
+		return (1);
 	tab_int_msg = msg_to_bin_alloc(argv[2]);
 	msg_to_bin_complete(tab_int_msg, argv[2]);
-	int	i = 0;
-	int	j;
-	int	nb_of_char = 0;
-	while(argv[2][nb_of_char])
-	{
+	i = 0;
+	nb_of_char = 0;
+	while (argv[2][nb_of_char])
 		nb_of_char++;
-	}
-	while(i < nb_of_char)
+	while (i < nb_of_char)
 	{
-		j = 0;
-		while(j < 8)
-		{
-			printf("%d", tab_int_msg[i][j]);
-			if (tab_int_msg[i][j] == 0)
-			{
-				kill(ft_atoi(argv[1]), SIGUSR1);
-			}
-			else
-			{
-				kill(ft_atoi(argv[1]), SIGUSR2);
-			}
-			usleep(100);
-			j++;
-		}
-		printf("\n");
+		main2(i, tab_int_msg, argv);
 		i++;
 	}
-	//kill(ft_atoi(argv[1]), SIGUSR1);
+	i = 0;
+	while (i < 8)
+	{
+		kill(ft_atoi(argv[1]), SIGUSR1);
+		usleep(100);
+		i++;
+	}
 	return (0);
 }
