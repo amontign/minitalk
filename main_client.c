@@ -6,14 +6,11 @@
 /*   By: amontign <amontign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/31 12:11:35 by amontign          #+#    #+#             */
-/*   Updated: 2023/06/09 10:22:05 by amontign         ###   ########.fr       */
+/*   Updated: 2023/06/22 09:05:42 by amontign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "utils.h"
 
 int	ft_atoi(const char *nptr)
 {
