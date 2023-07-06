@@ -1,1 +1,0 @@
-itoa + ft_putsr pour le pid
