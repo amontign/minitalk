@@ -12,7 +12,9 @@
 
 #include "utils.h"
 
-void	bin_to_dec(char *bin_tab, int iter)
+char	*g_bin_tab;
+
+void	bin_to_dec(char *g_bin_tab, int iter)
 {
 	int	res;
 	int	puissance;
@@ -27,7 +29,7 @@ void	bin_to_dec(char *bin_tab, int iter)
 		i = 7 + (j * 8);
 		while (i >= (j * 8))
 		{
-			res += (bin_tab[i] - 48) * puissance;
+			res += (g_bin_tab[i] - 48) * puissance;
 			puissance *= 2;
 			i--;
 		}
@@ -36,22 +38,22 @@ void	bin_to_dec(char *bin_tab, int iter)
 	}
 }
 
-int	check_end(char *bin_tab, int signal_count)
+int	check_end(char *g_bin_tab, int signal_count)
 {
 	int	i;
 
 	i = signal_count - 8;
 	while (i < signal_count)
 	{
-		if (bin_tab[i] == 49)
+		if (g_bin_tab[i] == 49)
 			return (0);
 		i++;
 	}
-	bin_to_dec(bin_tab, (signal_count / 8));
+	bin_to_dec(g_bin_tab, (signal_count / 8));
 	return (1);
 }
 
-char	*ft_realloc(char *bin_tab, int signal_count, int first_time)
+char	*ft_realloc(char *g_bin_tab, int signal_count, int first_time)
 {
 	char	*tmp_tab;
 	int		i;
@@ -59,17 +61,17 @@ char	*ft_realloc(char *bin_tab, int signal_count, int first_time)
 	tmp_tab = malloc(sizeof(char) * (signal_count + 2));
 	if (!tmp_tab)
 	{
-		free(bin_tab);
+		free(g_bin_tab);
 		exit(1);
 	}
 	i = 0;
 	while (i < signal_count)
 	{
-		tmp_tab[i] = bin_tab[i];
+		tmp_tab[i] = g_bin_tab[i];
 		i++;
 	}
 	if (signal_count > 0 || first_time == 0)
-		free(bin_tab);
+		free(g_bin_tab);
 	return (tmp_tab);
 }
 
@@ -77,64 +79,37 @@ void	sig_handler(int signal_num)
 {
 	static int	signal_count;
 	static int	first_time;
-	static char	*bin_tab;
 
-	if (signal_count == 0)
-		bin_tab = malloc(sizeof(char));
-	if (!bin_tab)
+	g_bin_tab = ft_realloc(g_bin_tab, signal_count, first_time);
+	if (signal_count != 0)
 	{
-		exit(1);
-	}
-	else
-	{
-		bin_tab = ft_realloc(bin_tab, signal_count, first_time);
 		first_time = 1;
 	}
+	if (!g_bin_tab)
+		exit(1);
 	if (signal_num == SIGUSR1)
-	{
-		bin_tab[signal_count] = 48;
-	}
+		g_bin_tab[signal_count] = 48;
 	else
-	{
-		bin_tab[signal_count] = 49;
-	}
-	signal_count++;
-	bin_tab[signal_count] = 0;
+		g_bin_tab[signal_count] = 49;
+	g_bin_tab[++signal_count] = 0;
 	if (signal_count % 8 == 0)
 	{
-		if (check_end(bin_tab, signal_count))
+		if (check_end(g_bin_tab, signal_count))
 		{
 			signal_count = 0;
-			free(bin_tab);
+			free(g_bin_tab);
+			g_bin_tab = NULL;
 		}
 	}
 }
 
-int	main(void)
+void	sig_int_handler(int sig)
 {
-	struct sigaction	action;
-	char	*pid;
-
-	action.sa_handler = sig_handler;
-	sigemptyset(&action.sa_mask);
-	action.sa_flags = 0;
-	//printf("PID : %d\n", getpid());
-	pid = ft_itoa(getpid());
-	ft_putstr("PID : ");
-	ft_putstr(pid);
-	free(pid);
-	ft_putstr("\n");
-	if (sigaction(SIGUSR1, &action, NULL) < 0)
+	(void)sig;
+	if (g_bin_tab)
 	{
-		return (1);
+		free(g_bin_tab);
+		g_bin_tab = NULL;
 	}
-	if (sigaction(SIGUSR2, &action, NULL) < 0)
-	{
-		return (1);
-	}
-	while (1)
-	{
-		pause();
-	}
-	return (0);
+	exit(0);
 }

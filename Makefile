@@ -16,7 +16,9 @@ NAMECLIENT = client
 CC = cc
 
 SRCSERVER = utils.c \
-	main_server.c
+	utils2.c \
+	main_server.c \
+	main_server2.c
 
 SRCCLIENT = main_client.c
 
