@@ -65,3 +65,17 @@ char	*ft_itoa(int n)
 	res = ft_itoa_complete(l, res, n, n2);
 	return (res);
 }
+
+int	is_nb(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}

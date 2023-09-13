@@ -6,7 +6,7 @@
 #    By: amontign <amontign@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/30 09:20:11 by amontign          #+#    #+#              #
-#    Updated: 2023/06/22 09:02:50 by amontign         ###   ########.fr        #
+#    Updated: 2023/07/25 10:50:16 by amontign         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,10 +17,15 @@ CC = cc
 
 SRCSERVER = utils.c \
 	utils2.c \
+	utils3.c \
 	main_server.c \
 	main_server2.c
 
-SRCCLIENT = main_client.c
+SRCCLIENT = main_client.c \
+	main_client2.c \
+	utils.c \
+	utils2.c \
+	utils3.c
 
 OBJSSERVER = ${SRCSERVER:.c=.o}
 OBJSCLIENT = ${SRCCLIENT:.c=.o}

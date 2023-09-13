@@ -1,54 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   main_client2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amontign <amontign@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/06 11:29:35 by amontign          #+#    #+#             */
-/*   Updated: 2023/07/24 08:38:34 by amontign         ###   ########.fr       */
+/*   Created: 2023/07/25 10:49:34 by amontign          #+#    #+#             */
+/*   Updated: 2023/07/25 10:52:55 by amontign         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
-size_t	ft_strlen(const char *s)
+void	handle_sig2(int sig)
 {
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	(void)sig;
+	exit(1);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
-{
-	unsigned int	i;
-	unsigned int	lg;	
-
-	lg = ft_strlen(src);
-	i = 0;
-	if (size != 0)
-	{
-		while (src[i] != '\0' && i < size - 1)
-		{
-			dst[i] = src[i];
-			i++;
-		}
-		dst[i] = '\0';
-	}
-	return (lg);
-}
-
-void	ft_putstr(char *s)
+void	msg_to_bin_complete(int (*tab_int_msg)[8], char *msg)
 {
 	int	i;
+	int	j;
+	int	char_tmp;
 
 	i = 0;
-	while (s[i])
+	while (msg[i])
 	{
-		write(1, &s[i], 1);
+		char_tmp = (int)msg[i];
+		j = 7;
+		while (j >= 0)
+		{
+			tab_int_msg[i][j] = char_tmp & 1;
+			char_tmp = char_tmp >> 1;
+			j--;
+		}
 		i++;
+	}
+	j = 0;
+	while (j < 8)
+	{
+		tab_int_msg[i][j] = 0;
+		j++;
 	}
 }
