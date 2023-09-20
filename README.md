@@ -16,7 +16,7 @@ Minitalk is a project developed as part of the 42 school curriculum. It's a prog
 To install and compile Minitalk, follow the steps below:
 
 ```sh
-git clone https://github.com/your_username/minitalk.git
+git clone https://github.com/amontign/minitalk.git
 cd minitalk
 make
 ```
